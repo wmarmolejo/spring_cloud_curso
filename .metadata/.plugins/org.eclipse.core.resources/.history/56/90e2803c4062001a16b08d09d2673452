@@ -1,0 +1,14 @@
+package com.kalettre.springboot.app.usuarios.models.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="roles")
+public class Role implements Serializable{
+
+	private static final long serialVersionUID = 1750667374321965322L;
+
+}

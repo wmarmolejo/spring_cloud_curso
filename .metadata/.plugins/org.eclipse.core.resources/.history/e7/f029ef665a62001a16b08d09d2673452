@@ -1,0 +1,5 @@
+package com.kalettre.springboot.app.usuarios.models.dao;
+
+public interface UsuarioDao {
+
+}

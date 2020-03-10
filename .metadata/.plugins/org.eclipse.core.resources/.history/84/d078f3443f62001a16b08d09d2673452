@@ -1,0 +1,12 @@
+package com.kalettre.springboot.app.usuarios.models.entity;
+
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1613834994295830262L;
+
+}
