@@ -2,7 +2,9 @@ package com.kalettre.springboot.app.usuarios;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+@EntityScan({"com.kalettre.springboot.app.commons.usuarios.models.entity"})
 @SpringBootApplication
 public class SpringbootServicioUsuariosApplication {
 
