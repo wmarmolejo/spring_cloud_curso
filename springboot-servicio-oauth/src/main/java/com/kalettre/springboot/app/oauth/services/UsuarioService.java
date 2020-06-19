@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.kalettre.springboot.app.commons.usuarios.models.entity.Usuario;
 import com.kalettre.springboot.app.oauth.clients.UsuarioFeignClient;
 
+import feign.FeignException;
+
 @Service //Clase la cual consulta el usuario para la autenticacion 
 public class UsuarioService implements UserDetailsService, IUsuarioService{
 
@@ -25,11 +27,9 @@ public class UsuarioService implements UserDetailsService, IUsuarioService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Usuario usuario =client.findByUsername(username);
-		if(usuario==null) {
-			log.error("Error en el login, no existe el usuario '"+username+"' en el sistema");
-			throw new UsernameNotFoundException("Error en el login, no existe el usuario '"+username+"' en el sistema");
-		}
+		
+		try {					
+		Usuario usuario =client.findByUsername(username);		
 		List<GrantedAuthority> authorities=usuario.getRoles().
 				stream().
 				map(role->new SimpleGrantedAuthority(role.getNombre()))
@@ -38,11 +38,21 @@ public class UsuarioService implements UserDetailsService, IUsuarioService{
 		log.info("Usuario autenticado: "+username);
 		return new User(usuario.getUsername(),usuario.getPassword(),usuario.getEnabled(),true,
 				true,true,authorities);
+		} catch (FeignException e) {		
+			log.error("Error en el login, no existe el usuario '"+username+"' en el sistema");
+			throw new UsernameNotFoundException("Error en el login, no existe el usuario '"+username+"' en el sistema");			
+		} 
+		
 	}
 
 	@Override
 	public Usuario findByUsername(String username) {	 
 		return client.findByUsername(username);
+	}
+
+	@Override
+	public Usuario update(Usuario usuario, Long id) {
+		return client.update(usuario, id);
 	}
 
 }
