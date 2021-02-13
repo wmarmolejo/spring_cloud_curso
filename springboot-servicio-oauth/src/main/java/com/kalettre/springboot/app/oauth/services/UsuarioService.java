@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.kalettre.springboot.app.commons.usuarios.models.entity.Usuario;
 import com.kalettre.springboot.app.oauth.clients.UsuarioFeignClient;
 
+import brave.Tracer;
 import feign.FeignException;
 
 @Service //Clase la cual consulta el usuario para la autenticacion 
@@ -24,6 +25,8 @@ public class UsuarioService implements UserDetailsService, IUsuarioService{
 	private Logger log = LoggerFactory.getLogger(UsuarioService.class);
 	@Autowired
 	private UsuarioFeignClient client;
+	@Autowired
+	private Tracer tracer;//traza para zipkin
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -38,8 +41,10 @@ public class UsuarioService implements UserDetailsService, IUsuarioService{
 		log.info("Usuario autenticado: "+username);
 		return new User(usuario.getUsername(),usuario.getPassword(),usuario.getEnabled(),true,
 				true,true,authorities);
-		} catch (FeignException e) {		
-			log.error("Error en el login, no existe el usuario '"+username+"' en el sistema");
+		} catch (FeignException e) {
+			String errorMen="Error en el login, no existe el usuario '"+username+"' en el sistema";
+			log.error(errorMen);
+			tracer.currentSpan().tag("error.mensaje", errorMen+" : "+e.getMessage());//traza para zipkin
 			throw new UsernameNotFoundException("Error en el login, no existe el usuario '"+username+"' en el sistema");			
 		} 
 		

@@ -69,7 +69,7 @@
 			</artifactId>
 		</dependency>
 		
-		
+		<!-- latency and fault tolerance library -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>
@@ -83,6 +83,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+		<!-- Trazabilidad distribuida -->
+		
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zipkin</artifactId>
 		</dependency>
 	</dependencies>
 

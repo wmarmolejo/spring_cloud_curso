@@ -6,7 +6,9 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
+		<item key="selection" value=""/>
 		<list key="findhistory">
+			<item value="spring-cloud.version"/>
 			<item value="1-SNAPSHOT&lt;/version&gt;"/>
 		</list>
 		<list key="replacehistory">

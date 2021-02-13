@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.kalettre.springboot.app.commons.usuarios.models.entity.Usuario;
 import com.kalettre.springboot.app.oauth.services.IUsuarioService;
 
+import brave.Tracer;
 import feign.FeignException;
 
 @Component
@@ -21,6 +22,9 @@ public class AuthenticatioSuccessErrorHandler implements AuthenticationEventPubl
 	
 	@Autowired
 	private IUsuarioService usuarioService;
+	
+	@Autowired
+	private Tracer tracer;//traza para zipkin
 	
 	@Override
 	public void publishAuthenticationSuccess(Authentication authentication) {
@@ -36,22 +40,31 @@ public class AuthenticatioSuccessErrorHandler implements AuthenticationEventPubl
 
 	@Override
 	public void publishAuthenticationFailure(AuthenticationException exception, Authentication authentication) {
-		log.error("Error en el login: "+exception.getMessage());
+		String mensaje="Error en el login: "+exception.getMessage();
+		log.error(mensaje);
 		try {
+			StringBuilder errors=new StringBuilder();
+			errors.append(mensaje);
 			Usuario usuario=usuarioService.findByUsername(authentication.getName());
 			if(usuario.getIntentos()==null) {
 				usuario.setIntentos(0);				
 			}
 			log.info("Intentos actuales es de: "+usuario.getIntentos());
+			
 			usuario.setIntentos(usuario.getIntentos()+1);
-			log.info("Intentos despues es de: "+usuario.getIntentos());
+			
+			log.info("Intentos del Login : "+usuario.getIntentos());
+			
+			errors.append(" - Intentos del Login : "+usuario.getIntentos());
 			
 			if(usuario.getIntentos()>=3) {
-				log.error(String.format("El usuario %s des-habilitado por máximos intentos."+usuario.getUsername()));
+				String errorMaxInten=String.format("El usuario %s des-habilitado por máximos intentos.",usuario.getUsername());
+				log.error(errorMaxInten);
+				errors.append(" - "+ errorMaxInten);
 				usuario.setEnabled(false);
 			}
 			usuarioService.update(usuario, usuario.getId());
-			
+			tracer.currentSpan().tag("error.mensaje", errors.toString()); //traza para zipkin
 		} catch (FeignException e) {
 			log.error("Usuario %s no existe en el sistema",authentication.getName());
 		}

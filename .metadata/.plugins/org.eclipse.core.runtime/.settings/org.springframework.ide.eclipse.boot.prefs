@@ -7,6 +7,8 @@ org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-eureka-serve
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-feign=2
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-oauth2=2
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-ribbon=1
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-starter-sleuth=5
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-starter-zipkin=5
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-zuul=1
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.data-jpa=4
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.data-rest=1
