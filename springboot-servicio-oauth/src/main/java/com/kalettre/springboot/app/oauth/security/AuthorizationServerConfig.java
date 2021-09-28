@@ -57,7 +57,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.authorizedGrantTypes("password","refresh_token")
 		.accessTokenValiditySeconds(3600) /// 1 hora el token  habil 
 		.refreshTokenValiditySeconds(3600); //1 hora del token refresh
-		
 //		.and()  //para configurar otro cliente
 //		.withClient("frontendapp")
 //		.secret(passwordEncoder.encode("12345"))
@@ -69,12 +68,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override //configuración del token de acceso
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		 
 		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
 		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(infoAdicionalToken,accessTokenConverter()));		
 		endpoints.authenticationManager(authenticationManager)
 		.tokenStore(tokenStore())
 		.accessTokenConverter(accessTokenConverter())
 		.tokenEnhancer(tokenEnhancerChain);
+		
 	}
 
 	@Bean

@@ -1,0 +1,23 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: servicio-productos
+        uri: lb://servicio-productos
+        predicates:
+          - Path=/api/productos/**
+        filters:
+          - StripPrefix=2
+          - name: NombreFilterCookie
+            args:              mensaje: hola mi mensaje personalizado
+              cookieNombre: usuario              cookieValor: wilmarmolejo
+      - id: servicio-items
+        uri: lb://servicio-items
+        predicates:
+          - Path=/api/items/**
+        filters:
+          - StripPrefix=2
+          - NombreFilterCookie= Hola mensaje item, usuario, wmarmolejo3
+          - AddRequestParameter= nombre, wilmar
+          - AddRequestHeader= token-request, 654321
+          - AddResponseHeader= token-response, 123456 

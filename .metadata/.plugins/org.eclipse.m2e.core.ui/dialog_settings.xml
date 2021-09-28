@@ -14,21 +14,21 @@
 	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-zuul-server"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-usuarios-commons"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-usuarios"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-productos"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-oauth"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-item"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-eureka-server"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-config-server"/>
+			<item value="C:\Users\wilma\Documents\workspace_git\spring_cloud_curso\springboot-servicio-commons"/>
 			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-usuarios"/>
 			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-usuarios-commons"/>
 			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-productos"/>
 			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-oauth"/>
 			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-item"/>
 			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-zuul-server"/>
-			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-commons"/>
-			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-config-server"/>
-			<item value="C:\Spring_cloud\workspace\spring_cloud_curso\springboot-servicio-eureka-server"/>
-			<item value="C:\SpringCloudUdemy\spring_cloud_curso\springboot-servicio-usuarios"/>
-			<item value="C:\SpringCloudUdemy\spring_cloud_curso\springboot-servicio-zuul-server"/>
-			<item value="C:\SpringCloudUdemy\spring_cloud_curso\springboot-servicio-item"/>
-			<item value="C:\SpringCloudUdemy\spring_cloud_curso\springboot-servicio-productos"/>
-			<item value="C:\SpringCloudUdemy\spring_cloud_curso\springboot-servicio-eureka-server"/>
-			<item value="C:\SpringCloudUdemy\spring_cloud_curso\springboot-servicio-config-server"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
