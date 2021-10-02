@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -24,12 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kalettre.springboot.app.item.models.Item;
 import com.kalettre.springboot.app.commons.models.entity.Producto;
-import com.kalettre.springboot.app.item.models.service.ItemService;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.kalettre.springboot.app.item.models.service.ItemService; 
 
 @RefreshScope //sirve para mantener actualizado los componentes y el Enviroment
 @RestController
 public class ItemController {
+	
+	private final Logger log = LoggerFactory.getLogger(ItemController.class);
+	@Autowired
+	private CircuitBreakerFactory cbFactory;
 	
 	@Autowired
 	private Environment env;
@@ -41,22 +47,25 @@ public class ItemController {
 	private String texto;
 	
 	@GetMapping("/listar")
-	public List<Item> listar(@RequestParam(name="nombre") String nombreFilterHeader,
-			@RequestHeader(name="token-request") String tokenRequestFilterHeader){
+	public List<Item> listar(@RequestParam(name="nombre", required=false) String nombreFilterHeader,
+			@RequestHeader(name="token-request",required=false) String tokenRequestFilterHeader){
 		//envio del request 
 		System.out.println("------------------- nombreFilterHeader : "+ nombreFilterHeader);
 		System.out.println("------------------- tokenRequestFilterHeader : "+ tokenRequestFilterHeader);
 		return itemService.findAll();
 	}
 	
-	@HystrixCommand(fallbackMethod="metodoAlternativo")
+	//@HystrixCommand(fallbackMethod="metodoAlternativo") con hystrix, pero ya esta deprecado
 	@GetMapping("/ver/{id}/cantidad/{cantidad}")
 	public Item detalle(@PathVariable Long id, @PathVariable Integer cantidad) {
-		return itemService.findById(id, cantidad);
+		return cbFactory.create("items")
+				.run(() -> itemService.findById(id, cantidad),	// intente ejecutar este
+						e -> metodoAlternativo(id, cantidad, e)); //metodo a ejecutar en caso que falle
 	}
 	
 	//Si la aplicación no se encuentra desplegada se ejecuta este metodo
-	public Item metodoAlternativo( Long id,  Integer cantidad) {
+	public Item metodoAlternativo( Long id,  Integer cantidad, Throwable e) {
+		log.info("Throwable e: "+e.getMessage());
 		Item item=new Item();
 		item.setCantidad(cantidad);
 		Producto producto=new Producto();

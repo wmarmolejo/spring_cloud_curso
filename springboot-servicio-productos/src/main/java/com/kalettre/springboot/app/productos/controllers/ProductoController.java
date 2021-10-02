@@ -1,6 +1,7 @@
 package com.kalettre.springboot.app.productos.controllers;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,15 +43,13 @@ public class ProductoController {
 	public Producto detalle(@PathVariable Long id) throws Exception{
 		Producto producto=productoService.findById(id);
 		//producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
-//		try {
-//			Thread.sleep(2000l);
-//		}catch(InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		boolean ok=false;
-//		if(ok==false) {
-//			throw new Exception("No se pudo cargar el producto");
-//		}
+		if(id.equals(10L)) {
+			throw new IllegalStateException("Producto fuera inventario");
+		}
+		
+		if(id.equals(7L)) {
+			TimeUnit.SECONDS.sleep(5L);
+		}
 		
 		return productoService.findById(id);
 	}

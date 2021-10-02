@@ -40,7 +40,6 @@ public class EjemploGlobalFilter implements GlobalFilter, Ordered{
 
 	@Override
 	public int getOrder() {
-		// TODO Auto-generated method stub
 		return 1;
 	}
 
