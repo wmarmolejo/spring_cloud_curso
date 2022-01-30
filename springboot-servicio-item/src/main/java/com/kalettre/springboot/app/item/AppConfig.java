@@ -23,6 +23,7 @@ public class AppConfig {
 	}
 	
 	@Bean //configuracion del resilience4j para el circuitbreaker desde clase
+	//NOTA IMPORTANTE: SI SE CONFIGURA EL Resilience4J POR YML O PROPORTIES NO SE TOMARÁ ESTA CONFIGURACION 
 	public Customizer<Resilience4JCircuitBreakerFactory> defaultCustomizer(){
 		return factory->factory.configureDefault(id->{
 			return new Resilience4JConfigBuilder(id)

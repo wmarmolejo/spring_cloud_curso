@@ -3,6 +3,7 @@ package com.kalettre.springboot.app.item.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kalettre.springboot.app.item.models.Item;
 import com.kalettre.springboot.app.commons.models.entity.Producto;
-import com.kalettre.springboot.app.item.models.service.ItemService; 
+import com.kalettre.springboot.app.item.models.service.ItemService;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter; 
 
 @RefreshScope //sirve para mantener actualizado los componentes y el Enviroment
 @RestController
@@ -58,9 +62,23 @@ public class ItemController {
 	//@HystrixCommand(fallbackMethod="metodoAlternativo") con hystrix, pero ya esta deprecado
 	@GetMapping("/ver/{id}/cantidad/{cantidad}")
 	public Item detalle(@PathVariable Long id, @PathVariable Integer cantidad) {
-		return cbFactory.create("items")
+		return cbFactory.create("items")  //AQUI SE LLAMA DESDE EL ARCHIVO CONFIG
 				.run(() -> itemService.findById(id, cantidad),	// intente ejecutar este
 						e -> metodoAlternativo(id, cantidad, e)); //metodo a ejecutar en caso que falle
+	}
+	
+	@CircuitBreaker(name="items",fallbackMethod ="metodoAlternativo" )
+	@GetMapping("/verYML/{id}/cantidad/{cantidad}")
+	public Item detalleYML(@PathVariable Long id, @PathVariable Integer cantidad) { // detalle con circuitbraker annotation
+		return  itemService.findById(id, cantidad);  
+	}
+	
+	@CircuitBreaker(name="items", fallbackMethod = "metodoAlternativoTimeLimiter") //para usar el circuitbraker
+	//@TimeLimiter(name="items", fallbackMethod = "metodoAlternativoTimeLimiter") // en caso que solo sea para timeout
+	@TimeLimiter(name="items") // si maneja circuitbreaker (tolerancia a fallos) y time out se deja asi y se especifica en circuitbreaker
+	@GetMapping("/detalleTimeLimiter/{id}/cantidad/{cantidad}")
+	public CompletableFuture<Item> detalleTimeLimiter(@PathVariable Long id, @PathVariable Integer cantidad) { // detalle con circuitbraker annotation
+		return CompletableFuture.supplyAsync(()->itemService.findById(id, cantidad));  
 	}
 	
 	//Si la aplicación no se encuentra desplegada se ejecuta este metodo
@@ -74,6 +92,19 @@ public class ItemController {
 		producto.setPrecio(500.00);
 		item.setProducto(producto);
 		return item;
+	} 
+	
+	//metodo alternativo para el timeout
+	public CompletableFuture<Item> metodoAlternativoTimeLimiter( Long id,  Integer cantidad, Throwable e) {
+		log.info("Throwable e: "+e.getMessage());
+		Item item=new Item();
+		item.setCantidad(cantidad);
+		Producto producto=new Producto();
+		producto.setId(id);
+		producto.setNombre("Camara Sony");
+		producto.setPrecio(500.00);
+		item.setProducto(producto);
+		return CompletableFuture.supplyAsync(()->item);
 	} 
 	
 	@GetMapping("/obtener-config")
